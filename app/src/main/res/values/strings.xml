@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Pokemon</string>
+    <string name="default_web_client_id" translatable="false">webClientId.apps.googleusercontent.com</string>
+    <string name="logoutTitle">Log out</string>
+    <string name="pokemonTitle">Pokemon</string>
+    <string name="txtStart">Start</string>
+    <string name="txtLike">Like</string>
+    <string name="txtDislike">Dislike</string>
+    <string name="errorMessage">Some unexpected error happens, please retry.</string>
+    <string name="historyTitle">History</string>
+    <string name="txtPokemonImageItem">Pokemon Image</string>
+</resources>

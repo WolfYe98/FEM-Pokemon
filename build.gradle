@@ -1,0 +1,18 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+id 'com.android.application' version '8.1.2' apply false
+id 'com.google.gms.google-services' version '4.4.0' apply false
+}
+
+ext {
+    appCompatVersion = '1.6.1'
+    constraintLayoutVersion = '2.0.4'
+
+    firebaseBoMVersion = '32.4.0'
+    firebaseUIAuthVersion = '8.0.2'
+
+    retrofit2Version = '2.9.0'
+    gsonVersion = '2.10.1'
+
+    glideVersion = '4.16.0'
+}
