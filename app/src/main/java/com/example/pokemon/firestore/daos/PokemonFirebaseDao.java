@@ -7,19 +7,11 @@ import androidx.annotation.NonNull;
 
 import com.example.pokemon.firestore.documents.PokemonEntity;
 import com.example.pokemon.pokeapiREST.models.Pokemon;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class PokemonFirebaseDao {
     private static final String COLLECTION_NAME = "pokemon";
@@ -30,36 +22,38 @@ public class PokemonFirebaseDao {
 
     private final Activity activity;
 
-    public PokemonFirebaseDao(@NonNull Activity activity){
+    public PokemonFirebaseDao(@NonNull Activity activity) {
         this.activity = activity;
         this.LOG_TAG = activity.getLocalClassName() + " -> PokemonFirebaseDao";
     }
-    public Query getPokemonsLikedByUserQuery(String uid){
-        return pokemonCollection.where(Filter.or(Filter.arrayContains(LIKED_USERS,uid),Filter.arrayContains(DISLIKED_USERS,uid)));
+
+    public Query getPokemonsLikedByUserQuery(String uid) {
+        return pokemonCollection.where(Filter.or(Filter.arrayContains(LIKED_USERS, uid), Filter.arrayContains(DISLIKED_USERS, uid)));
     }
-    public void addOrUpdatePokemonWithUser(@NonNull Pokemon pokemonModel, String userID, boolean liked){
+
+    public void addOrUpdatePokemonWithUser(@NonNull Pokemon pokemonModel, String userID, boolean liked) {
         PokemonEntity pokemon = new PokemonEntity(pokemonModel);
         DocumentReference reference = pokemonCollection.document(pokemon.getId());
         reference.get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().exists()) {
-                        pokemon.addLikedOrDislikedUser(liked,userID);
+                        pokemon.addLikedOrDislikedUser(liked, userID);
                         pokemonCollection.document(pokemon.getId()).set(pokemon)
                                 .addOnFailureListener(activity,
-                                        e -> Log.e(LOG_TAG,"Failed to write pokemon to db",e)
+                                        e -> Log.e(LOG_TAG, "Failed to write pokemon to db", e)
                                 );
-                    } else if(task.getResult().exists()){
+                    } else if (task.getResult().exists()) {
                         PokemonEntity dbPokemon = task.getResult().toObject(PokemonEntity.class);
-                        dbPokemon.addLikedOrDislikedUser(liked,userID);
-                        pokemonCollection.document(dbPokemon.getId()).update(LIKED_USERS,dbPokemon.getLikedUsers())
+                        dbPokemon.addLikedOrDislikedUser(liked, userID);
+                        pokemonCollection.document(dbPokemon.getId()).update(LIKED_USERS, dbPokemon.getLikedUsers())
                                 .addOnCompleteListener(task1 -> {
-                                    Log.i(LOG_TAG,"Update complete");
+                                    Log.i(LOG_TAG, "Update complete");
                                 });
-                        pokemonCollection.document(dbPokemon.getId()).update(DISLIKED_USERS,dbPokemon.getDislikedUsers())
+                        pokemonCollection.document(dbPokemon.getId()).update(DISLIKED_USERS, dbPokemon.getDislikedUsers())
                                 .addOnCompleteListener(task1 -> {
-                                    Log.i(LOG_TAG,"Update complete");
+                                    Log.i(LOG_TAG, "Update complete");
                                 });
-                    }else {
+                    } else {
                         Log.i(LOG_TAG, "Error getting documents: ", task.getException());
                     }
                 });

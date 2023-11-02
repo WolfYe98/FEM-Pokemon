@@ -9,4 +9,9 @@
     <string name="errorMessage">Some unexpected error happens, please retry.</string>
     <string name="historyTitle">History</string>
     <string name="txtPokemonImageItem">Pokemon Image</string>
+    <string name="txtPokemonDetailsName">Name:</string>
+    <string name="txtPokemonDetailsHeight">Height:</string>
+    <string name="txtPokemonDetailsWeight">Weight:</string>
+    <string name="txtPokemonDetailsLikedUsers">Liked By:</string>
+    <string name="txtPokemonDetailsDislikedUsers">Disliked By:</string>
 </resources>

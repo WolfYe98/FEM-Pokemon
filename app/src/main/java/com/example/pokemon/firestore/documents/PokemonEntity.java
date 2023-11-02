@@ -1,11 +1,11 @@
 package com.example.pokemon.firestore.documents;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
 import com.example.pokemon.pokeapiREST.models.Pokemon;
-import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 import com.google.firebase.firestore.PropertyName;
 
@@ -15,6 +15,34 @@ import java.util.Objects;
 
 @IgnoreExtraProperties
 public class PokemonEntity implements Parcelable {
+    public static final Parcelable.Creator<PokemonEntity> CREATOR = new Parcelable.Creator<PokemonEntity>() {
+
+        @Override
+        public PokemonEntity createFromParcel(Parcel source) {
+            PokemonEntity pokemon = new PokemonEntity();
+            pokemon.id = source.readString();
+            pokemon.height = source.readInt();
+            pokemon.name = source.readString();
+            pokemon.imageUrl = source.readString();
+            pokemon.weight = source.readInt();
+            List<String> likedList = new ArrayList<>();
+            source.readList(likedList, String.class.getClassLoader());
+            pokemon.likedUsers = likedList;
+            List<String> dislikedList = new ArrayList<>();
+            source.readList(dislikedList, String.class.getClassLoader());
+            pokemon.dislikedUsers = dislikedList;
+            return pokemon;
+        }
+
+        @Override
+        public PokemonEntity[] newArray(int size) {
+            return new PokemonEntity[0];
+        }
+    };
+    @PropertyName("likedUsers")
+    List<String> likedUsers;
+    @PropertyName("dislikedUsers")
+    List<String> dislikedUsers;
     @PropertyName("id")
     private String id;
     @PropertyName("height")
@@ -25,23 +53,23 @@ public class PokemonEntity implements Parcelable {
     private String imageUrl;
     @PropertyName("weight")
     private Integer weight;
-    @PropertyName("likedUsers")
-    List<String> likedUsers;
-    @PropertyName("dislikedUsers")
-    List<String> dislikedUsers;
-    public PokemonEntity(){
+
+    public PokemonEntity() {
 
     }
-    public PokemonEntity(Pokemon pokemonModel){
+
+    public PokemonEntity(Pokemon pokemonModel) {
         this.fromModel(pokemonModel);
     }
-    private void fromModel(Pokemon pokemonModel){
+
+    private void fromModel(Pokemon pokemonModel) {
         this.id = pokemonModel.getId().toString();
         this.name = pokemonModel.getName();
         this.height = pokemonModel.getHeight();
         this.imageUrl = pokemonModel.getSprites().getFrontDefault();
         this.weight = pokemonModel.getWeight();
     }
+
     @NonNull
     public String getId() {
         return id;
@@ -59,6 +87,7 @@ public class PokemonEntity implements Parcelable {
     public void setHeight(@NonNull Integer height) {
         this.height = height;
     }
+
     @NonNull
     public String getName() {
         return name;
@@ -67,6 +96,7 @@ public class PokemonEntity implements Parcelable {
     public void setName(@NonNull String name) {
         this.name = name;
     }
+
     @NonNull
     public String getImageUrl() {
         return imageUrl;
@@ -75,6 +105,7 @@ public class PokemonEntity implements Parcelable {
     public void setImageUrl(@NonNull String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
     @NonNull
     public Integer getWeight() {
         return weight;
@@ -99,40 +130,44 @@ public class PokemonEntity implements Parcelable {
     public void setDislikedUsers(List<String> dislikedUsers) {
         this.dislikedUsers = dislikedUsers;
     }
-    public void addLikedOrDislikedUser(boolean liked, String userID){
-        if(liked){
+
+    public void addLikedOrDislikedUser(boolean liked, String userID) {
+        if (liked) {
             this.addLikedUser(userID);
-        } else{
+        } else {
             this.addDislikedUser(userID);
         }
     }
 
     private void addLikedUser(String userID) {
-        if(this.userNotIncluded(userID)){
+        if (this.userNotIncluded(userID)) {
             this.likedUsers.add(userID);
-        }else if(this.dislikedUsers != null && this.dislikedUsers.contains(userID)){
+        } else if (this.dislikedUsers != null && this.dislikedUsers.contains(userID)) {
             this.dislikedUsers.remove(userID);
             this.likedUsers.add(userID);
         }
     }
+
     private void addDislikedUser(String userID) {
 
-        if(this.userNotIncluded(userID)){
+        if (this.userNotIncluded(userID)) {
             this.dislikedUsers.add(userID);
-        } else if(this.likedUsers != null && this.likedUsers.contains(userID)){
+        } else if (this.likedUsers != null && this.likedUsers.contains(userID)) {
             this.likedUsers.remove(userID);
             this.dislikedUsers.add(userID);
         }
     }
-    private boolean userNotIncluded(String userID){
-        if(this.likedUsers == null){
+
+    private boolean userNotIncluded(String userID) {
+        if (this.likedUsers == null) {
             this.likedUsers = new ArrayList<>();
         }
-        if(this.dislikedUsers == null){
+        if (this.dislikedUsers == null) {
             this.dislikedUsers = new ArrayList<>();
         }
         return !this.likedUsers.contains(userID) && !this.dislikedUsers.contains(userID);
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,5 +1,6 @@
 package com.example.pokemon.firestore;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.pokemon.HistoryActivity;
+import com.example.pokemon.PokemonDetailsActivity;
 import com.example.pokemon.R;
 import com.example.pokemon.firestore.documents.PokemonEntity;
 
@@ -22,6 +23,7 @@ public class PokemonEntityHolder extends RecyclerView.ViewHolder implements View
     private final TextView tvPokemonTitle;
     private final LinearLayout llItem;
     private PokemonEntity pokemon;
+
     public PokemonEntityHolder(@NonNull View itemView) {
         super(itemView);
         this.ivItemPokemon = itemView.findViewById(R.id.ivItemPokemon);
@@ -29,7 +31,8 @@ public class PokemonEntityHolder extends RecyclerView.ViewHolder implements View
         this.llItem = itemView.findViewById(R.id.llItem);
         itemView.setOnClickListener(this);
     }
-    public void bind(PokemonEntity pokemon, String uid){
+
+    public void bind(PokemonEntity pokemon, String uid) {
         this.pokemon = pokemon;
         Glide.with(itemView.getContext())
                 .load(pokemon.getImageUrl())
@@ -41,17 +44,18 @@ public class PokemonEntityHolder extends RecyclerView.ViewHolder implements View
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(this.ivItemPokemon);
         this.tvPokemonTitle.setText(pokemon.getName().toUpperCase());
-        if(pokemon.getLikedUsers().contains(uid)){
-            this.llItem.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.green));
-        } else{
-            this.tvPokemonTitle.setTextColor(ContextCompat.getColor(itemView.getContext(),R.color.black));
-            this.llItem.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.primaryColor));
+        if (pokemon.getLikedUsers().contains(uid)) {
+            this.llItem.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.green));
+        } else {
+            this.llItem.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.primaryColor));
         }
     }
 
     @Override
     public void onClick(View v) {
-        // TODO: Show dialog with pokemon details.
-        Log.i("item","clicked: "+this.pokemon.getName());
+        Log.i("item", "clicked: " + this.pokemon.getName());
+        Intent intent = new Intent(itemView.getContext(), PokemonDetailsActivity.class);
+        intent.putExtra("pokemon_details", this.pokemon);
+        itemView.getContext().startActivity(intent);
     }
 }

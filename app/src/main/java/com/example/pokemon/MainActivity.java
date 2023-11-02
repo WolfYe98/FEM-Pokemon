@@ -14,7 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -38,12 +37,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
-    private static String BASE_URL = "https://pokeapi.co/";
-    private static String LOG_TAG = "Pokemon - Main";
-    private static String LOG_TAG_ERROR = "ERROR: Pokemon - Main";
     private static final int RC_SIGN_IN = 2019;
     private static final int MAX_ID = 1000;
     private static final int MIN_ID = 1;
+    private static String BASE_URL = "https://pokeapi.co/";
+    private static String LOG_TAG = "Pokemon - Main";
+    private static String LOG_TAG_ERROR = "ERROR: Pokemon - Main";
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mFirebaseAuthListener;
     private TextView tvUserName;
@@ -56,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private PokemonRESTAPIService pokemonService;
     private Pokemon currentPokemon;
     private PokemonFirebaseDao pokemonFirebaseDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,16 +73,17 @@ public class MainActivity extends AppCompatActivity {
         pokemonService = retrofit.create(PokemonRESTAPIService.class);
         pokemonFirebaseDao = new PokemonFirebaseDao(this);
     }
-    private void addBtns(){
+
+    private void addBtns() {
         btStart = findViewById(R.id.btStart);
         btStart.setOnClickListener(this::btnStartClick);
 
         llButtons = findViewById(R.id.llButtons);
 
         btLike = findViewById(R.id.btLike);
-        btLike.setOnClickListener(btn ->this.btnLikeDislikeClicked(btn,true));
+        btLike.setOnClickListener(btn -> this.btnLikeDislikeClicked(btn, true));
         btDislike = findViewById(R.id.btDislike);
-        btDislike.setOnClickListener(btn ->this.btnLikeDislikeClicked(btn,false));
+        btDislike.setOnClickListener(btn -> this.btnLikeDislikeClicked(btn, false));
     }
 
     private void btnLikeDislikeClicked(View btn, boolean liked) {
@@ -90,9 +91,10 @@ public class MainActivity extends AppCompatActivity {
         this.getPokemonFromExternalAPI();
     }
 
-    private void signIn(FirebaseAuth firebaseAuth){
+    private void signIn(FirebaseAuth firebaseAuth) {
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        if(user == null) {
+        if (user == null) {
+            this.btStart.setEnabled(false);
             startActivityForResult(
                     AuthUI.getInstance().
                             createSignInIntentBuilder().
@@ -102,11 +104,13 @@ public class MainActivity extends AppCompatActivity {
                             setIsSmartLockEnabled(!BuildConfig.DEBUG, true).
                             build(),
                     RC_SIGN_IN);
-        }else {
-            Log.i(LOG_TAG,"User: "+ user.getEmail()+" loged in");
+        } else {
+            Log.i(LOG_TAG, "User: " + user.getEmail() + " loged in");
+            this.btStart.setEnabled(true);
             tvUserName.setText(user.getDisplayName());
         }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -118,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mFirebaseAuthListener);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -128,10 +133,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.opLogout:
                 this.signOut();
-                Log.i(LOG_TAG,"Signed out");
+                Log.i(LOG_TAG, "Signed out");
                 return true;
             case R.id.opHistory:
                 this.openHistoryActivity();
@@ -145,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void signOut(){
+    private void signOut() {
         this.mFirebaseAuth.signOut();
         this.tvUserName.setText(getString(R.string.pokemonTitle));
         this.llButtons.setVisibility(View.GONE);
@@ -154,31 +159,35 @@ public class MainActivity extends AppCompatActivity {
         this.tvPokemonName.setText("");
         this.currentPokemon = null;
     }
-    private void btnStartClick(View view){
+
+    private void btnStartClick(View view) {
         this.btStart.setVisibility(View.GONE);
         this.getPokemonFromExternalAPI();
     }
-    private void createSnackBarWithMessageID(int id){
+
+    private void createSnackBarWithMessageID(int id) {
         Snackbar.make(
                 findViewById(android.R.id.content),
                 getString(id),
                 Snackbar.LENGTH_LONG
         ).show();
     }
-    private void getPokemonFromExternalAPI(){
+
+    private void getPokemonFromExternalAPI() {
         Random random = new Random();
-        int randomID = (random.nextInt(MAX_ID-MIN_ID)+MIN_ID)%MAX_ID;
+        int randomID = (random.nextInt(MAX_ID - MIN_ID) + MIN_ID) % MAX_ID;
         Call<Pokemon> pokemonAsyncCall = pokemonService.getPokemonByID(randomID);
         pokemonAsyncCall.enqueue(new Callback<Pokemon>() {
             @Override
             public void onResponse(Call<Pokemon> call, Response<Pokemon> response) {
                 Pokemon pokemon = response.body();
-                Log.i(LOG_TAG,"Pokemon "+pokemon.getName()+" getted");
+                Log.i(LOG_TAG, "Pokemon " + pokemon.getName() + " getted");
                 llButtons.setVisibility(View.VISIBLE);
                 setPokemonImage(pokemon.getSprites().getFrontDefault());
                 tvPokemonName.setText(pokemon.getName().toUpperCase());
                 currentPokemon = pokemon;
             }
+
             @Override
             public void onFailure(Call<Pokemon> call, Throwable t) {
                 Log.i(LOG_TAG_ERROR, Objects.requireNonNull(t.getMessage()));
@@ -190,8 +199,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    private void setPokemonImage(String url){
-        Log.i(LOG_TAG,"Setting pokemon image");
+
+    private void setPokemonImage(String url) {
+        Log.i(LOG_TAG, "Setting pokemon image");
         Glide.with(this)
                 .load(url)
                 .fitCenter()

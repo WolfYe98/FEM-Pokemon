@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:paddingTop="10dp">
+    android:paddingTop="10dp"
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/tvUserName"
@@ -14,75 +13,78 @@
         android:layout_centerHorizontal="true"
         android:text="@string/pokemonTitle"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/primaryColor"
         android:textSize="30sp"
-        android:textStyle="bold"
-        android:textColor="@color/primaryColor"/>
+        android:textStyle="bold" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tvUserName"
         android:orientation="vertical">
+
         <LinearLayout
+            android:id="@+id/llImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/llImage"
             android:orientation="vertical"
             tools:ignore="UseCompoundDrawables">
+
             <ImageView
+                android:id="@+id/ivPokemon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                android:src="@mipmap/ic_launcher_foreground"
-                android:contentDescription="@string/pokemonTitle"
-                android:id="@+id/ivPokemon"
                 android:layout_weight="1"
-                />
+                android:contentDescription="@string/pokemonTitle"
+                android:src="@mipmap/ic_launcher_foreground" />
+
             <TextView
+                android:id="@+id/tvPokemonName"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textColor="@color/primaryColor"
-                android:id="@+id/tvPokemonName"
                 android:layout_weight="15"
                 android:textAlignment="center"
-                />
+                android:textColor="@color/primaryColor" />
         </LinearLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5.5"
-            >
+            android:layout_weight="5.5">
+
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:text="@string/txtStart"
+                android:id="@+id/btStart"
                 style="@style/PokemonButton"
-                android:id="@+id/btStart"/>
-            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
-                android:visibility="gone"
+                android:layout_centerVertical="true"
+                android:text="@string/txtStart" />
+
+            <LinearLayout
                 android:id="@+id/llButtons"
-                >
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone">
+
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/DislikeButton"
-                    android:text="@string/txtDislike"
-                    android:layout_marginEnd="20dp"
                     android:id="@+id/btDislike"
-                    />
-                <Button
+                    style="@style/DislikeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/LikeButton"
-                    android:text="@string/txtLike"
+                    android:layout_marginEnd="20dp"
+                    android:text="@string/txtDislike" />
+
+                <Button
                     android:id="@+id/btLike"
-                    />
+                    style="@style/LikeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/txtLike" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

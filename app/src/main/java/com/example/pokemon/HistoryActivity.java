@@ -1,14 +1,14 @@
 package com.example.pokemon;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pokemon.firestore.PokemonEntityHolder;
 import com.example.pokemon.firestore.daos.PokemonFirebaseDao;
@@ -21,13 +21,16 @@ import com.google.firebase.firestore.Query;
 
 public class HistoryActivity extends AppCompatActivity {
     private static final String LOG_TAG = "HistoryActivity";
+
+    static {
+        FirebaseFirestore.setLoggingEnabled(true);
+    }
+
     private String uid;
     private PokemonFirebaseDao pokemonFirebaseDao;
     private Query pokemonByUserQuery;
     private RecyclerView recyclerView;
-    static {
-        FirebaseFirestore.setLoggingEnabled(true);
-    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +57,7 @@ public class HistoryActivity extends AppCompatActivity {
                         .setQuery(pokemonByUserQuery, PokemonEntity.class)
                         .setLifecycleOwner(this)
                         .build();
-        Log.i(LOG_TAG,"creating new adapter");
+        Log.i(LOG_TAG, "creating new adapter");
         return new FirestoreRecyclerAdapter<PokemonEntity, PokemonEntityHolder>(options) {
             @NonNull
             @Override
@@ -65,7 +68,7 @@ public class HistoryActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull PokemonEntityHolder holder, int position, @NonNull PokemonEntity model) {
-                holder.bind(model,uid);
+                holder.bind(model, uid);
             }
         };
     }
